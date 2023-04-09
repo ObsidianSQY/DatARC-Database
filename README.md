@@ -1,8 +1,25 @@
-Easiest way to use the code:
+Start:
 1. Go to https://www.anaconda.com/
 2. Press "Download", download and install Anaconda
 3. Open anaconda and open jupyter notebook
-4. Create new notebook
-5. Copy datarc_basic.py content to created new notebook
-6. Copy datarc_medium.py content to created new notebook
-7. Copy UI_datarc_medium.py content to created new notebook
+
+Easiest way to use the code in jupyter notebook:
+1. Create new notebook
+2. Copy datarc_basic.py content to created new notebook
+3. Copy datarc_medium.py content to created new notebook
+4. Copy UI_datarc.py content to created new notebook
+5. Run the notebook
+
+Generate exe program:
+1. Open anaconda and open the notebook, output file as .py
+1. Open Powershell Prompt from anaconda
+2. Type in command "pip install pyinstaller" and press enter
+3. After completion, type in command "pip install auto-py-to-exe" and press enter
+4. After completion, type in command "auto-py-to-exe" and press enter, this will open program generater
+5. Select the created .py file
+6. Set "Onefile" option to "One File"
+7. Set "Console Window" option to "Window Based"
+8. You may choose the output directory by using "Setting"
+9. Press "CONVERT .PY TO EXE" to generate exe program
+10. Wait until completion (This takes amount of time)
+11. Go to the output directory and run the generated exe program
