@@ -16,7 +16,7 @@ Generate exe program:
 2. Type in command "pip install pyinstaller" and press enter
 3. After completion, type in command "pip install auto-py-to-exe" and press enter
 4. After completion, type in command "auto-py-to-exe" and press enter, this will open program generater
-5. Select the created .py file (Easy to build version is the UI)
+5. Select the created .py file (Easy to build version is the UI_datarc.py)
 6. Set "Onefile" option to "One File"
 7. Set "Console Window" option to "Window Based"
 8. You may choose the output directory by using "Setting"
