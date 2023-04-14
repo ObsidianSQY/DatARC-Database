@@ -5,10 +5,8 @@ Start:
 
 Easiest way to use the code in jupyter notebook:
 1. Create new notebook
-2. Copy datarc_basic.py content to created new notebook
-3. Copy datarc_medium.py content to created new notebook
-4. Copy UI_datarc.py content to created new notebook
-5. Run the notebook
+2. Copy UI_datarc.py content to new created notebook
+3. Run the notebook
 
 Generate exe program:
 1. Open anaconda and open the notebook, output file as .py
@@ -17,6 +15,7 @@ Generate exe program:
 3. After completion, type in command "pip install auto-py-to-exe" and press enter
 4. After completion, type in command "auto-py-to-exe" and press enter, this will open program generater
 5. Select the created .py file (Easy to build version is the UI_datarc.py)
+6. You may add icon file .icon to assign an icon
 6. Set "Onefile" option to "One File"
 7. Set "Console Window" option to "Window Based"
 8. You may choose the output directory by using "Setting"
