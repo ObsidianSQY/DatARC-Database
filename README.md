@@ -1,8 +1,12 @@
-The exe file can be obtained from:\n
+The exe file can be obtained from:
+
 https://drive.google.com/file/d/13MEwi7mMto7wVKrmQVm4kXY7KwPfwsZo/view?usp=sharing
 
-You need to setup a mysql server on machine to build database:\n
+
+You need to setup a mysql server on machine to build database:
+
 https://dev.mysql.com/downloads/mysql/
+
 
 To use the original Python code to run the program:
 Start:
@@ -10,15 +14,18 @@ Start:
 2. Press "Download", download and install Anaconda
 3. Open anaconda and open jupyter notebook
 
+
 Packages operation:
 install pandas
 install mysql-connector-python
 install tk
 
+
 Easiest way to use the code in jupyter notebook:
 1. Create new notebook
 2. Copy UI_datarc.py content to new created notebook
 3. Run the notebook
+
 
 Generate exe program:
 1. Open anaconda and open the notebook, output file as .py
