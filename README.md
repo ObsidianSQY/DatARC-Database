@@ -1,7 +1,7 @@
-The exe file can be obtained from:
+The exe file can be obtained from:\n
 https://drive.google.com/file/d/13MEwi7mMto7wVKrmQVm4kXY7KwPfwsZo/view?usp=sharing
 
-You need to setup a mysql server on machine to build database:
+You need to setup a mysql server on machine to build database:\n
 https://dev.mysql.com/downloads/mysql/
 
 To use the original Python code to run the program:
