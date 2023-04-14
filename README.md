@@ -1,3 +1,7 @@
+The exe file can be obtained from:
+https://drive.google.com/file/d/13MEwi7mMto7wVKrmQVm4kXY7KwPfwsZo/view?usp=sharing
+
+To use the original Python code to run the program:
 Start:
 1. Go to https://www.anaconda.com/
 2. Press "Download", download and install Anaconda
