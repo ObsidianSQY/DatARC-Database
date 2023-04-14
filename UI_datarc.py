@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[4]:
+# In[1]:
 
 
 import pandas as pd
@@ -13,7 +13,7 @@ from functools import partial
 from tkinter import filedialog
 
 
-# In[5]:
+# In[2]:
 
 
 def readTableResearch(filename):
@@ -316,7 +316,7 @@ def limitation(dataframe, columnName, keyword):
 
 
 def strconvert(content, isInt):
-    if content == "NULL":
+    if content == "NULL" or content == "":
         return
     if isInt:
         int(content)
@@ -330,7 +330,7 @@ def strconvert(content, isInt):
 
 def onepiece(i, mycursor, csv):
     data = csv.iloc[i]
-    sql = "INSERT INTO list (rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO list (rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, id, invited_attend, attended) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     val0 = strconvert(data[0], True)
     val1 = strconvert(data[1], True)
     val2 = strconvert(data[2], False)
@@ -353,7 +353,9 @@ def onepiece(i, mycursor, csv):
     val19 = strconvert(data[19], True)
     val20 = strconvert(data[20], True)
     val21 = strconvert(data[21], True)
-    val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21]
+    val22 = strconvert(data[22], False)
+    val23 = strconvert(data[23], False)
+    val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21,val22,val23]
     mycursor.execute(sql, val)
 
 
@@ -392,7 +394,7 @@ def whole_table_input(db, csv_table):
 
 
 def oneline_input(db, data):
-    sql = "INSERT INTO list (rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    sql = "INSERT INTO list (rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, id, invited_attend, attended) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     val0 = strconvert(data[0], True)
     val1 = strconvert(data[1], True)
     val2 = strconvert(data[2], False)
@@ -415,15 +417,27 @@ def oneline_input(db, data):
     val19 = strconvert(data[19], True)
     val20 = strconvert(data[20], True)
     val21 = strconvert(data[21], True)
-    val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21]
+    if statInv == 1:
+        val22 = "YES"
+    elif statInv == 2:
+        val22 = "NO"
+    elif statInv == 0:
+        val22 = None
+    if statAt == 1:
+        val23 = "YES"
+    elif statAt == 2:
+        val23 = "NO"
+    elif statAt == 0:
+        val23 = None
+    val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21,val22,val23]
     db.cursor().execute(sql, val)
 
 
 # In[32]:
 
 
-def handle_input(db, rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, actualid):
-    sql = "INSERT INTO list (rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+def handle_input(db, rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, actualid, statInv, statAt):
+    sql = "INSERT INTO list (rank_other, rank_vtarc, rank_justification, source, name, last_name, institution, title, domain, gender, topic, description, fields, key_notes, links, email, website, pub, citation, hindex, h5index, id, invited_attend, attended) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     val0 = strconvert(rank_other, True)
     val1 = strconvert(rank_vtarc, True)
     val2 = strconvert(rank_justification, False)
@@ -446,7 +460,19 @@ def handle_input(db, rank_other, rank_vtarc, rank_justification, source, name, l
     val19 = strconvert(hindex, True)
     val20 = strconvert(h5index, True)
     val21 = strconvert(actualid, True)
-    val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21]
+    if statInv == 1:
+        val22 = "YES"
+    elif statInv == 2:
+        val22 = "NO"
+    elif statInv == 0:
+        val22 = None
+    if statAt == 1:
+        val23 = "YES"
+    elif statAt == 2:
+        val23 = "NO"
+    elif statAt == 0:
+        val23 = None
+    val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21,val22,val23]
     db.cursor().execute(sql, val)
 
 
@@ -748,6 +774,33 @@ def update_actualid_info(db, id_in_db, value, na):
         val = [value, id_in_db]
         db.cursor().execute(sql, val)
 
+def update_invite_info(db, id_in_db, value, na):
+    if na or value == 0:
+        sql = "UPDATE vtarc.list SET invited_attend = NULL WHERE uniq = %s"
+        val = [id_in_db]
+        db.cursor().execute(sql, val)
+    else:
+        if value == 1:
+            result = "YES"
+        elif value == 2:
+            result = "NO"
+        sql = "UPDATE vtarc.list SET invited_attend = %s WHERE uniq = %s"
+        val = [result, id_in_db]
+        db.cursor().execute(sql, val)
+
+def update_attend_info(db, id_in_db, value, na):
+    if na or value == 0:
+        sql = "UPDATE vtarc.list SET attended = NULL WHERE uniq = %s"
+        val = [id_in_db]
+        db.cursor().execute(sql, val)
+    else:
+        if value == 1:
+            result = "YES"
+        elif value == 2:
+            result = "NO"
+        sql = "UPDATE vtarc.list SET attended = %s WHERE uniq = %s"
+        val = [result, id_in_db]
+        db.cursor().execute(sql, val)
 
 def delete_uniq(db, id_in_db):
     sql = "DELETE FROM vtarc.list WHERE uniq = %s"
@@ -827,6 +880,13 @@ def updateInfo():
 
     if not intid.get() == "":
         update_actualid_info(db, uni_idnum.get(), intid.get(), False)
+    
+    if not statusInv.get() == 0:
+        update_invite_info(db, uni_idnum.get(), statusInv.get(), False)
+        
+    if not statusAt.get() == 0:
+        update_attend_info(db, uni_idnum.get(), statusAt.get(), False)
+        
     db.commit()
     db.close()
     messagebox.showinfo(title="Message", message="Information update successful!")
@@ -1133,6 +1193,32 @@ def del_id():
         db.close()
         messagebox.showerror(title="Error", message=e)
     return
+
+def del_invite():
+    try:
+        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+        update_invite_info(db, uni_idnum.get(), statusInv.get(), True)
+        db.commit()
+        db.close()
+        msg = "Clear Invited to attend at Unique ID " +  uni_idnum.get()  + " successful!"
+        messagebox.showinfo(title="Message", message=msg)
+    except Exception as e:
+        db.close()
+        messagebox.showerror(title="Error", message=e)
+    return
+
+def del_attend():
+    try:
+        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+        update_attend_info(db, uni_idnum.get(), statusAt.get(), True)
+        db.commit()
+        db.close()
+        msg = "Clear Attend at Unique ID " +  uni_idnum.get()  + " successful!"
+        messagebox.showinfo(title="Message", message=msg)
+    except Exception as e:
+        db.close()
+        messagebox.showerror(title="Error", message=e)
+    return
                             
 def Close():
     tkWindow.destroy()
@@ -1155,7 +1241,7 @@ def inputTable():
 def inputHandInfo():
     db = mysql_connect(host.get(), username.get(), password.get(), database.get())
     try:
-        handle_input(db, rank.get(), rankvtac.get(), just.get(), source.get(), name.get(), lname.get(), inst.get(), title.get(), domain.get(), gender.get(), topic.get(), descrip.get(), field.get(), keynotes.get(), links.get(), email.get(), website.get(), pub.get(), cite.get(), h.get(), h5.get(), intid.get())
+        handle_input(db, rank.get(), rankvtac.get(), just.get(), source.get(), name.get(), lname.get(), inst.get(), title.get(), domain.get(), gender.get(), topic.get(), descrip.get(), field.get(), keynotes.get(), links.get(), email.get(), website.get(), pub.get(), cite.get(), h.get(), h5.get(), intid.get(), statusInv.get(), statusAt.get())
         db.commit()
         db.close()
         messagebox.showinfo(title="Message", message="Information input successful!")
@@ -1348,8 +1434,24 @@ idLable = Label(tkWindow,text="ID").place(x = 760, y = 490)
 intid = StringVar()
 idEntry = Entry(tkWindow, textvariable=intid).place(x = 760, y = 520)
 
-Button(tkWindow, text= "X", command=del_id).place(x = 890, y = 515)                            
-                            
+Button(tkWindow, text= "X", command=del_id).place(x = 890, y = 515)
+
+#invitedlabel and box
+invLable = Label(tkWindow,text="Invited to Attend").place(x = 460, y = 495)
+statusInv = IntVar()
+Radiobutton(tkWindow, text= "Yes", variable = statusInv, value=1).place(x = 460, y = 520)
+Radiobutton(tkWindow, text= "No", variable = statusInv, value=2).place(x = 530, y = 520)
+
+Button(tkWindow, text= "X", command=del_invite).place(x = 590, y = 515)
+
+#attendedlabel and box
+invLable2 = Label(tkWindow,text="Attended").place(x = 1060, y = 495)
+statusAt = IntVar() 
+Radiobutton(tkWindow, text= "Yes", variable = statusAt, value=1).place(x = 1060, y = 520)
+Radiobutton(tkWindow, text= "No", variable = statusAt, value=2).place(x = 1130, y = 520)
+
+Button(tkWindow, text= "X", command=del_attend).place(x = 1190, y = 515)
+                                            
 Button(tkWindow, text= "Input Information", command=inputHandInfo).place(x = 145, y = 350)
 Button(tkWindow, text= "Import Table", command=inputTable).place(x = 155, y = 400)
 Button(tkWindow, text= "Update Information", command=updateInfo).place(x = 135, y = 450)
