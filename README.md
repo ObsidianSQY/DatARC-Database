@@ -3,6 +3,11 @@ Start:
 2. Press "Download", download and install Anaconda
 3. Open anaconda and open jupyter notebook
 
+Packages operation:
+install pandas
+install mysql-connector-python
+install tk
+
 Easiest way to use the code in jupyter notebook:
 1. Create new notebook
 2. Copy UI_datarc.py content to new created notebook
