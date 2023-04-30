@@ -11,9 +11,10 @@ from tkinter import messagebox
 from tkinter import * 
 from functools import partial
 from tkinter import filedialog
+from tkinter.messagebox import askyesno
 
 
-# In[2]:
+# In[6]:
 
 
 def readTableResearch(filename):
@@ -316,7 +317,7 @@ def limitation(dataframe, columnName, keyword):
 
 
 def strconvert(content, isInt):
-    if content == "NULL" or content == "":
+    if content == "NULL":
         return
     if isInt:
         int(content)
@@ -363,7 +364,14 @@ def onepiece(i, mycursor, csv):
 
 
 def mysql_connect(hoststr, userstr, passwordstr, databasestr):
-    mydb = mysql.connector.connect(host=hoststr,
+    if ':' in hoststr:
+        [hostval, portval] = hoststr.split(":")
+    else:
+        hostval = hoststr
+        portval = 3306
+    
+    mydb = mysql.connector.connect(host=hostval,
+                                   port=portval,
                                    user=userstr,
                                    password=passwordstr,
                                    database=databasestr)
@@ -421,14 +429,10 @@ def oneline_input(db, data):
         val22 = "YES"
     elif statInv == 2:
         val22 = "NO"
-    elif statInv == 0:
-        val22 = None
     if statAt == 1:
         val23 = "YES"
     elif statAt == 2:
         val23 = "NO"
-    elif statAt == 0:
-        val23 = None
     val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21,val22,val23]
     db.cursor().execute(sql, val)
 
@@ -464,14 +468,10 @@ def handle_input(db, rank_other, rank_vtarc, rank_justification, source, name, l
         val22 = "YES"
     elif statInv == 2:
         val22 = "NO"
-    elif statInv == 0:
-        val22 = None
     if statAt == 1:
         val23 = "YES"
     elif statAt == 2:
         val23 = "NO"
-    elif statAt == 0:
-        val23 = None
     val = [val0,val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,val11,val12,val13,val14,val15,val16,val17,val18,val19,val20,val21,val22,val23]
     db.cursor().execute(sql, val)
 
@@ -775,7 +775,7 @@ def update_actualid_info(db, id_in_db, value, na):
         db.cursor().execute(sql, val)
 
 def update_invite_info(db, id_in_db, value, na):
-    if na or value == 0:
+    if na:
         sql = "UPDATE vtarc.list SET invited_attend = NULL WHERE uniq = %s"
         val = [id_in_db]
         db.cursor().execute(sql, val)
@@ -789,7 +789,7 @@ def update_invite_info(db, id_in_db, value, na):
         db.cursor().execute(sql, val)
 
 def update_attend_info(db, id_in_db, value, na):
-    if na or value == 0:
+    if na:
         sql = "UPDATE vtarc.list SET attended = NULL WHERE uniq = %s"
         val = [id_in_db]
         db.cursor().execute(sql, val)
@@ -813,96 +813,102 @@ def delete_row():
     delete_uniq(db, uni_idnum.get())
 
 def updateInfo():
-    db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-#    try:
-    if not rank.get() == "":
-        update_rank_other_info(db, uni_idnum.get(), rank.get(), False)
+    try:
+        updmsg = "Do you really want to update info at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=updmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            if not rank.get() == "":
+                update_rank_other_info(db, uni_idnum.get(), rank.get(), False)
 
-    if not rankvtac.get() == "":
-        update_rank_vtarc_info(db, uni_idnum.get(), rankvtac.get(), False)
+            if not rankvtac.get() == "":
+                update_rank_vtarc_info(db, uni_idnum.get(), rankvtac.get(), False)
 
-    if not just.get() == "":
-        update_just_info(db, uni_idnum.get(), just.get(), False)
+            if not just.get() == "":
+                update_just_info(db, uni_idnum.get(), just.get(), False)
 
-    if not source.get() == "":
-        update_source_info(db, uni_idnum.get(), source.get(), False)
+            if not source.get() == "":
+                update_source_info(db, uni_idnum.get(), source.get(), False)
 
-    if not name.get() == "":
-        update_name_info(db, uni_idnum.get(), name.get(), False)
+            if not name.get() == "":
+                update_name_info(db, uni_idnum.get(), name.get(), False)
 
-    if not lname.get() == "":
-        update_last_name_info(db, uni_idnum.get(), lname.get(), False)
+            if not lname.get() == "":
+                update_last_name_info(db, uni_idnum.get(), lname.get(), False)
 
-    if not inst.get() == "":
-        update_institution_info(db, uni_idnum.get(), inst.get(), False)
+            if not inst.get() == "":
+                update_institution_info(db, uni_idnum.get(), inst.get(), False)
 
-    if not title.get() == "":
-        update_title_info(db, uni_idnum.get(), title.get(), False)
+            if not title.get() == "":
+                update_title_info(db, uni_idnum.get(), title.get(), False)
 
-    if not domain.get() == "":
-        update_domain_info(db, uni_idnum.get(), domain.get(), False)
+            if not domain.get() == "":
+                update_domain_info(db, uni_idnum.get(), domain.get(), False)
 
-    if not gender.get() == "":
-        update_gender_info(db, uni_idnum.get(), gender.get(), False)
+            if not gender.get() == "":
+                update_gender_info(db, uni_idnum.get(), gender.get(), False)
 
-    if not topic.get() == "":
-        update_topic_info(db, uni_idnum.get(), topic.get(), False)
+            if not topic.get() == "":
+                update_topic_info(db, uni_idnum.get(), topic.get(), False)
 
-    if not descrip.get() == "":
-        update_description_info(db, uni_idnum.get(), descrip.get(), False)
+            if not descrip.get() == "":
+                update_description_info(db, uni_idnum.get(), descrip.get(), False)
 
-    if not field.get() == "":
-        update_fields_info(db, uni_idnum.get(), field.get(), False)
+            if not field.get() == "":
+                update_fields_info(db, uni_idnum.get(), field.get(), False)
 
-    if not keynotes.get() == "":
-        update_key_notes_info(db, uni_idnum.get(), keynotes.get(), False)
+            if not keynotes.get() == "":
+                update_key_notes_info(db, uni_idnum.get(), keynotes.get(), False)
 
-    if not links.get() == "":
-        update_links_info(db, uni_idnum.get(), links.get(), False)
+            if not links.get() == "":
+                update_links_info(db, uni_idnum.get(), links.get(), False)
 
-    if not email.get() == "":
-        update_email_info(db, uni_idnum.get(), email.get(), False)
+            if not email.get() == "":
+                update_email_info(db, uni_idnum.get(), email.get(), False)
 
-    if not website.get() == "":
-        update_website_info(db, uni_idnum.get(), website.get(), False)
+            if not website.get() == "":
+                update_website_info(db, uni_idnum.get(), website.get(), False)
 
-    if not pub.get() == "":
-        update_pub_info(db, uni_idnum.get(), pub.get(), False)
+            if not pub.get() == "":
+                update_pub_info(db, uni_idnum.get(), pub.get(), False)
 
-    if not cite.get() == "":
-        update_citation_info(db, uni_idnum.get(), cite.get(), False)
+            if not cite.get() == "":
+                update_citation_info(db, uni_idnum.get(), cite.get(), False)
 
-    if not h.get() == "":
-        update_hindex(db, uni_idnum.get(), h.get(), False)
+            if not h.get() == "":
+                update_hindex(db, uni_idnum.get(), h.get(), False)
 
-    if not h5.get() == "":
-        update_h5index_info(db, uni_idnum.get(), h5.get(), False)
+            if not h5.get() == "":
+                update_h5index_info(db, uni_idnum.get(), h5.get(), False)
 
-    if not intid.get() == "":
-        update_actualid_info(db, uni_idnum.get(), intid.get(), False)
-    
-    if not statusInv.get() == 0:
-        update_invite_info(db, uni_idnum.get(), statusInv.get(), False)
-        
-    if not statusAt.get() == 0:
-        update_attend_info(db, uni_idnum.get(), statusAt.get(), False)
-        
-    db.commit()
-    db.close()
-    messagebox.showinfo(title="Message", message="Information update successful!")
-#    except Exception as e:
-#        db.close()
-#        messagebox.showerror(title="Error", message=e)
+            if not intid.get() == "":
+                update_actualid_info(db, uni_idnum.get(), intid.get(), False)
+
+            if not statusInv.get() == 0:
+                update_invite_info(db, uni_idnum.get(), statusInv.get(), False)
+
+            if not statusAt.get() == 0:
+                update_attend_info(db, uni_idnum.get(), statusAt.get(), False)
+
+            db.commit()
+            db.close()
+            messagebox.showinfo(title="Message", message="Information update successful!")
+    except Exception as e:
+        db.close()
+        messagebox.showerror(title="Error", message=e)
     return
 
 def del_row():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        delete_uniq(db, uni_idnum.get())
-        db.commit()
-        db.close()
-        msg = "Row at Unique ID " +  uni_idnum.get()  + " cleared successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear row "+ uni_idnum.get()
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            delete_uniq(db, uni_idnum.get())
+            db.commit()
+            db.close()
+            msg = "Row at Unique ID " +  uni_idnum.get()  + " cleared successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -910,12 +916,15 @@ def del_row():
 
 def del_rank_other():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_rank_other_info(db, uni_idnum.get(), rank.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Rank Other at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Rank Other at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_rank_other_info(db, uni_idnum.get(), rank.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Rank Other at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -923,12 +932,15 @@ def del_rank_other():
 
 def del_rank_vtarc():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_rank_vtarc_info(db, uni_idnum.get(), rankvtac.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Rank VT-ARC at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Rank VT-ARC at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_rank_vtarc_info(db, uni_idnum.get(), rankvtac.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Rank VT-ARC at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -936,12 +948,15 @@ def del_rank_vtarc():
 
 def del_rank_just():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_just_info(db, uni_idnum.get(), just.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Rank Justification at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Rank Justification at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_just_info(db, uni_idnum.get(), just.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Rank Justification at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -949,12 +964,15 @@ def del_rank_just():
 
 def del_source():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_source_info(db, uni_idnum.get(), source.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Source at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Source at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_source_info(db, uni_idnum.get(), source.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Source at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -962,12 +980,15 @@ def del_source():
                             
 def del_name():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_name_info(db, uni_idnum.get(), name.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Name at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Name at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_name_info(db, uni_idnum.get(), name.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Name at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -975,12 +996,15 @@ def del_name():
                             
 def del_lname():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_last_name_info(db, uni_idnum.get(), lname.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Last Name at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Last Name at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_last_name_info(db, uni_idnum.get(), lname.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Last Name at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -988,12 +1012,15 @@ def del_lname():
 
 def del_inst():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_institution_info(db, uni_idnum.get(), inst.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Institution at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Institution at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_institution_info(db, uni_idnum.get(), inst.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Institution at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1001,12 +1028,15 @@ def del_inst():
 
 def del_title():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_title_info(db, uni_idnum.get(), title.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Title at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Title at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_title_info(db, uni_idnum.get(), title.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Title at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1014,12 +1044,15 @@ def del_title():
 
 def del_domain():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_domain_info(db, uni_idnum.get(), domain.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Domain at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Domain at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_domain_info(db, uni_idnum.get(), domain.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Domain at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1027,12 +1060,15 @@ def del_domain():
                             
 def del_gender():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_gender_info(db, uni_idnum.get(), gender.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Gender at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Gender at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_gender_info(db, uni_idnum.get(), gender.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Gender at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1040,12 +1076,15 @@ def del_gender():
 
 def del_topic():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_topic_info(db, uni_idnum.get(), topic.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Topic at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Topic at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_topic_info(db, uni_idnum.get(), topic.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Topic at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1053,12 +1092,15 @@ def del_topic():
 
 def del_desc():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_description_info(db, uni_idnum.get(), descrip.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Description at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Description at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_description_info(db, uni_idnum.get(), descrip.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Description at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1066,12 +1108,15 @@ def del_desc():
                             
 def del_fields():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_fields_info(db, uni_idnum.get(), field.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Fields at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Fields at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_fields_info(db, uni_idnum.get(), field.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Fields at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1079,12 +1124,15 @@ def del_fields():
                             
 def del_keynote():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_key_notes_info(db, uni_idnum.get(), keynotes.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Key Notes at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Key Notes at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_key_notes_info(db, uni_idnum.get(), keynotes.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Key Notes at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1092,12 +1140,15 @@ def del_keynote():
                             
 def del_links():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_links_info(db, uni_idnum.get(), links.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Links at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Links at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_links_info(db, uni_idnum.get(), links.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Links at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1105,12 +1156,15 @@ def del_links():
                             
 def del_email():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_email_info(db, uni_idnum.get(), email.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear E-mail at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear E-mail at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_email_info(db, uni_idnum.get(), email.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear E-mail at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1118,12 +1172,15 @@ def del_email():
                             
 def del_website():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_website_info(db, uni_idnum.get(), website.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Website at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Website at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_website_info(db, uni_idnum.get(), website.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Website at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1131,12 +1188,15 @@ def del_website():
                             
 def del_pub():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_pub_info(db, uni_idnum.get(), pub.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Pub at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Pub at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_pub_info(db, uni_idnum.get(), pub.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Pub at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1144,12 +1204,15 @@ def del_pub():
                             
 def del_cite():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_citation_info(db, uni_idnum.get(), cite.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Citation at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Citation at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_citation_info(db, uni_idnum.get(), cite.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Citation at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1157,12 +1220,15 @@ def del_cite():
                             
 def del_hindex():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_hindex(db, uni_idnum.get(), h.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear H-index at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear H-index at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_hindex(db, uni_idnum.get(), h.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear H-index at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1170,12 +1236,15 @@ def del_hindex():
                             
 def del_h5index():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_h5index_info(db, uni_idnum.get(), h5.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear H5-index at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear H5-index at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_h5index_info(db, uni_idnum.get(), h5.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear H5-index at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1183,12 +1252,15 @@ def del_h5index():
                             
 def del_id():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_actualid_info(db, uni_idnum.get(), intid.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear ID at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear ID at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_actualid_info(db, uni_idnum.get(), intid.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear ID at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1196,12 +1268,15 @@ def del_id():
 
 def del_invite():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_invite_info(db, uni_idnum.get(), statusInv.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Invited to attend at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Invited at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_invite_info(db, uni_idnum.get(), statusInv.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Invited to attend at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1209,12 +1284,15 @@ def del_invite():
 
 def del_attend():
     try:
-        db = mysql_connect(host.get(), username.get(), password.get(), database.get())
-        update_attend_info(db, uni_idnum.get(), statusAt.get(), True)
-        db.commit()
-        db.close()
-        msg = "Clear Attend at Unique ID " +  uni_idnum.get()  + " successful!"
-        messagebox.showinfo(title="Message", message=msg)
+        delmsg = "Do you really want to clear Attend at unique id " + uni_idnum.get() + "?"
+        res = messagebox.askquestion(title="Confirm", message=delmsg)
+        if res == 'yes' :
+            db = mysql_connect(host.get(), username.get(), password.get(), database.get())
+            update_attend_info(db, uni_idnum.get(), statusAt.get(), True)
+            db.commit()
+            db.close()
+            msg = "Clear Attend at Unique ID " +  uni_idnum.get()  + " successful!"
+            messagebox.showinfo(title="Message", message=msg)
     except Exception as e:
         db.close()
         messagebox.showerror(title="Error", message=e)
@@ -1249,6 +1327,7 @@ def inputHandInfo():
         db.close()
         messagebox.showerror(title="Error", message=e)
     return
+    
 
 #window
 tkWindow = Tk()  
